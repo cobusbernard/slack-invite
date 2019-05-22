@@ -1,0 +1,15 @@
+service: aws-community-africa-google-recaptcha
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: prod
+  region: eu-west-1
+
+functions:
+  google-recaptcha:
+    handler: handler.recaptcha
+    name: google-recaptcha
+    environment:
+      RECAPTCHA: ${file(recaptcha.json):recaptcha}
+

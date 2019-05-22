@@ -1,0 +1,35 @@
+service: aws-community-africa-slack-invite
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: prod
+  region: eu-west-1
+
+functions:
+  slack-invite:
+    handler: handler.invite
+    name: slack-invite
+    events:
+      - http:
+          path: slack/invite
+          method: post
+          authorizer: google-recaptcha
+          cors: true
+          integration: lambda
+          response:
+            passthrough: NEVER
+    environment:
+      token: ${file(slack-invite.json):token}
+      team: ${file(slack-invite.json):team}
+      channels: ${file(slack-invite.json):channels}
+
+resources:
+ Resources:
+   FormBucket:
+     Type: AWS::S3::Bucket
+     Properties:
+       BucketName: aws-community.africa
+       WebsiteConfiguration:
+        ErrorDocument: index.html
+        IndexDocument: index.html
